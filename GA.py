@@ -26,7 +26,7 @@ class Path:
         path = self.get_path()
         length = 0
 
-        for i in range(NODE_COUNT - 1):
+        for i in range(PATH_LENGTH - 1):
             length += self.net[path[i] - 1, path[i+1] - 1]
         return length
 
@@ -88,12 +88,12 @@ class Generation:
         descendants = []
 
         self.paths.sort(key=sort_by_length)
-        descendants.append(self.paths[0])
+        descendants.append(self.paths.pop(0))
 
         for i in range(int(np.ceil(PATHS_COUNT / 10))):
             mutation = {}
 
-            path = self.paths[randint(0, PATHS_COUNT - 1)]
+            path = self.paths[randint(0, PATHS_COUNT - 2)]
             mutation['before'] = path.get_path()
             path.mutate()
             mutation['after'] = path.get_path()
@@ -104,9 +104,9 @@ class Generation:
         while len(descendants) < PATHS_COUNT:
             cross = {}
 
-            parent1 = self.paths[randint(0, PATHS_COUNT - 1)]
+            parent1 = self.paths[randint(0, PATHS_COUNT - 2)]
             cross['parent1'] = parent1.get_path()
-            parent2 = self.paths[randint(0, PATHS_COUNT - 1)]
+            parent2 = self.paths[randint(0, PATHS_COUNT - 2)]
             cross['parent2'] = parent2.get_path()
 
             path = self.crossover(parent1, parent2)
